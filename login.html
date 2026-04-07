@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grove — Daily Habit Tracker</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌳</text></svg>" />
+</head>
+<body>
+
+<!-- ANIMATED BACKGROUND -->
+<div class="bg-scene">
+  <div class="bg-cloud"></div>
+  <div class="bg-cloud"></div>
+  <div class="bg-cloud"></div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!--               LOGIN PAGE              -->
+<!-- ══════════════════════════════════════ -->
+<div id="login-page">
+  <div class="login-card">
+    <div class="login-logo">
+      <span class="tree-icon">🌳</span>
+      <h1>Grove</h1>
+      <p>Grow your habits, grow your tree.</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tab-row">
+      <button class="tab-btn active" data-tab="tab-login">Sign In</button>
+      <button class="tab-btn" data-tab="tab-register">Create Account</button>
+    </div>
+
+    <!-- LOGIN PANEL -->
+    <div id="tab-login" class="tab-panel">
+      <div class="form-group">
+        <label for="login-username">Username</label>
+        <input type="text" id="login-username" placeholder="Enter your username" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" placeholder="Enter your password" autocomplete="current-password" />
+      </div>
+      <button class="btn-primary" id="btn-login">Sign In 🌿</button>
+      <div class="form-error" id="login-error"></div>
+    </div>
+
+    <!-- REGISTER PANEL -->
+    <div id="tab-register" class="tab-panel" style="display:none;">
+      <div class="form-group">
+        <label for="reg-username">Choose a Username</label>
+        <input type="text" id="reg-username" placeholder="e.g. naturelover" autocomplete="username" />
+      </div>
+      <div class="form-group">
+        <label for="reg-password">Password</label>
+        <input type="password" id="reg-password" placeholder="Min 4 characters" autocomplete="new-password" />
+      </div>
+      <div class="form-group">
+        <label for="reg-confirm">Confirm Password</label>
+        <input type="password" id="reg-confirm" placeholder="Repeat your password" autocomplete="new-password" />
+      </div>
+      <button class="btn-primary" id="btn-register">Plant Your Seed 🌱</button>
+      <div class="form-error" id="reg-error"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!--                MAIN APP               -->
+<!-- ══════════════════════════════════════ -->
+<div id="app-page">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="topbar-brand">
+      <span>🌳</span> Grove
+    </div>
+    <div class="topbar-user">
+      <!-- XP Bar -->
+      <div class="xp-bar-wrap" style="width:140px;">
+        <div class="xp-bar-bg">
+          <div class="xp-bar-fill" id="xp-bar-fill" style="width:0%"></div>
+        </div>
+        <span class="xp-label" id="xp-label-text">0 XP</span>
+      </div>
+      <div class="avatar" id="user-avatar">U</div>
+      <span class="user-name" id="user-display-name">User</span>
+      <button class="logout-btn" id="logout-btn">Sign out</button>
+    </div>
+  </header>
+
+  <!-- MAIN LAYOUT -->
+  <div class="main-layout">
+
+    <!-- LEFT: TREE + PROGRESS -->
+    <div class="tree-section">
+      <h2>Your Grove</h2>
+
+      <!-- Progress Ring -->
+      <div class="progress-ring-wrap">
+        <svg width="130" height="130" viewBox="0 0 130 130">
+          <circle class="progress-ring-track" cx="65" cy="65" r="54" />
+          <circle class="progress-ring-fill" id="ring-fill" cx="65" cy="65" r="54"
+            style="stroke-dasharray: 339.3; stroke-dashoffset: 339.3;" />
+        </svg>
+        <div class="ring-label">
+          <span class="ring-pct" id="ring-pct">0%</span>
+          <span class="ring-sub">today</span>
+        </div>
+      </div>
+
+      <!-- Stage Badge -->
+      <div class="stage-badge">
+        <span class="dot"></span>
+        <span id="stage-badge-text">🌱 Seed</span>
+      </div>
+
+      <!-- Tree Canvas -->
+      <canvas id="tree-canvas" width="300" height="300"></canvas>
+
+      <!-- Stats Row -->
+      <div class="stats-row">
+        <div class="stat-box">
+          <span class="stat-val" id="stat-streak">0</span>
+          <span class="stat-lbl">🔥 Streak</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-val" id="stat-weeks">0</span>
+          <span class="stat-lbl">📅 Weeks</span>
+        </div>
+        <div class="stat-box">
+          <span class="stat-val" id="stat-xp">0</span>
+          <span class="stat-lbl">⭐ Total XP</span>
+        </div>
+      </div>
+
+      <!-- 7-Day Streak -->
+      <div style="width:100%">
+        <p style="font-size:0.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem;">This Week</p>
+        <div class="week-streak" id="week-streak"></div>
+      </div>
+
+      <!-- Month Achievement Track -->
+      <div style="width:100%">
+        <p style="font-size:0.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.5rem;">Fruit Milestones (every 3 weeks)</p>
+        <div class="month-track" id="month-track"></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: TASKS + VOUCHERS -->
+    <div class="right-panel">
+
+      <!-- TASKS CARD -->
+      <div class="card">
+        <h3>📋 Today's Routine</h3>
+        <div class="task-list" id="task-list"></div>
+        <div class="add-task-row">
+          <input type="text" id="new-task-input" placeholder="Add a new task…" maxlength="60" />
+          <button id="btn-add-task">+</button>
+        </div>
+      </div>
+
+      <!-- HOW IT WORKS -->
+      <div class="card">
+        <h3>🌱 How it Works</h3>
+        <div style="font-size:0.85rem;color:var(--muted);line-height:1.75;display:flex;flex-direction:column;gap:0.4rem;">
+          <div>✅ <strong>Check off tasks</strong> — your tree grows today</div>
+          <div>📅 <strong>Complete all tasks daily</strong> — earn streak days</div>
+          <div>🏆 <strong>3 consecutive weeks</strong> — your tree bears fruit!</div>
+          <div>🍎 <strong>Claim the fruit</strong> — unlock a reward voucher</div>
+          <div>🌟 <strong>Every 3 more weeks</strong> — new fruit every month!</div>
+        </div>
+      </div>
+
+      <!-- VOUCHERS / REWARDS -->
+      <div class="card">
+        <h3>🍎 Fruit Rewards</h3>
+        <div class="voucher-list" id="voucher-list"></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- VOUCHER CLAIM MODAL -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-fruit">🍎</div>
+    <h2 id="modal-title">Reward Unlocked!</h2>
+    <p>You've earned this by completing <strong>3 weeks</strong> of daily habits. You're amazing! 🌟</p>
+    <div class="voucher-code" id="modal-code">GROVE-XXXXXXXX</div>
+    <p style="font-size:0.8rem;color:var(--muted);">Save this code — redeem it for your reward!</p>
+    <button class="modal-close" id="modal-close-btn">Keep Growing! 🌳</button>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toast-container"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
